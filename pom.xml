@@ -7,14 +7,17 @@
     <groupId>com.newsnow</groupId>
     <artifactId>media-service</artifactId>
     <version>1.0.0</version>
-
     <packaging>pom</packaging>
-
     <name>Media Service</name>
+
     <modules>
+        <module>src/main/media-startup</module>
         <module>src/main/application/media-app</module>
-        <module>src/main/application/media-lib</module>
-        <module>src/main/outside/media-startup</module>
+        <module>src/main/infrastructure/driving/media-adapter-api</module>
+        <module>src/main/infrastructure/driven/media-adapter-persistence</module>
+        <module>src/main/infrastructure/driven/media-adapter-imagestorage</module>
+        <module>src/main/infrastructure/driven/media-adapter-imageprocessor</module>
+        <module>src/main/application/media-domain</module>
     </modules>
 
     <properties>
@@ -29,6 +32,8 @@
         <spring-boot.version>3.4.4</spring-boot.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+        <aws.sdk.version>2.20.86</aws.sdk.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -36,8 +41,16 @@
             <!-- Spring Boot Dependencies without starter parent -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
+                <artifactId>spring-boot-starter-parent</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- AWS SDK -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws.sdk.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -53,6 +66,16 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-mapstruct-binding</artifactId>
+                <version>${lombok-mapstruct-binding.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -88,6 +111,23 @@
                             <version>${lombok-mapstruct-binding.version}</version>
                         </dependency>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <compilerArg> -Amapstruct.defaultInjectionStrategy=constructor
+                        </compilerArg>
+                        <compilerArg> -Amapstruct.defaultComponentModel=spring
+                        </compilerArg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*IT.java</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>

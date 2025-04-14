@@ -1,0 +1,271 @@
+openapi: 3.0.3
+info:
+  title: Media Service
+  description: |
+    This is a sample Media Service API used for Media Processing based on the OpenAPI 3.0 specification.
+  contact:
+    email: jparedesr91@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080/newsnow/media"
+tags:
+  - name: Create Task
+    description: Create a task to resize image asyncrunous
+  - name: Get Task
+    description: Get task's status
+paths:
+  /task/{taskId}:
+    get:
+      tags:
+        - Get Task
+      summary: Get task status
+      description: Retrieve processing status and result of a specific task
+      operationId: getTask
+      parameters:
+        - name: taskId
+          in: path
+          description: ID of task
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                responseStatus: success
+                data: {
+                  task: {
+                    id: '550e8400-e29b-41d4-a716-446655440000',
+                    createdAt: '2024-12-23-21:42:58:284',
+                    originalMD5: '123456aaa7890123',
+                    resolution: '800x600',
+                    storageUrl: 'http//:image.url',
+                    status: 'COMPLETED'
+                  }
+                }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                responseStatus: error
+                errors: [
+                  {
+                    code: 400,
+                    message: Bad request.
+                  }
+                ]
+        '404':
+          description: Resource Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                responseStatus: error
+                errors: [
+                  {
+                    code: 404,
+                    message: Resource not found.
+                  }
+                ]
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                responseStatus: error
+                errors: [
+                  {
+                    code: 500,
+                    message: An unexpected error occurred.
+                  }
+                ]
+  /task:
+    post:
+      tags:
+        - Create Task
+      summary: Create new image processing task
+      description: Submit an image for resizing with specified dimensions
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Image file to process
+                width:
+                  type: integer
+                  minimum: 1
+                  example: 800
+                  description: Target width in pixels
+                height:
+                  type: integer
+                  minimum: 1
+                  example: 600
+                  description: Target height in pixels
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                responseStatus: success
+                data: {
+                  task: {
+                    id: '550e8400-e29b-41d4-a716-446655440000',
+                    createdAt: '2024-12-23-21:42:58:284',
+                    originalMD5: '123456aaa7890123',
+                    resolution: '800x600',
+                    storageUrl: '',
+                    status: 'PENDING'
+                  }
+                }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                responseStatus: error
+                errors: [
+                  {
+                    code: 400,
+                    message: Bad Request.
+                  }
+                ]
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                responseStatus: error
+                errors: [
+                  {
+                    code: 500,
+                    message: An unexpected error occurred.
+                  }
+                ]
+components:
+  schemas:
+    GenericResponse:
+      allOf:
+        - type: object
+          properties:
+            data:
+              type: object
+              nullable: true
+              description: Response payload
+              oneOf:
+                - $ref: '#/components/schemas/TaskData'
+        - $ref: '#/components/schemas/Response'
+    TaskData:
+      description: Returns a task
+      properties:
+        id:
+          type: integer
+          description: Id of the task.
+          format: int64
+        createdAt:
+          type: string
+          description: Creation date of the task.
+          pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}-([0-9]{2}:){2}[0-9]{2}'
+        originalMD5:
+          type: string
+          description: MD5 of original image
+        resolution:
+          type: string
+          description: Image resolution
+        storageUrl:
+          type: string
+          description: Image storage url
+        status:
+          type: string
+          description: Task status
+          enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+    Error:
+      title: Root Type of Error
+      description: ''
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          description: |
+            Error code.
+            Enum whose values are **retrieved from the enum method**
+            
+            ## Datatype
+            Enum
+            
+            ## Rules
+            **Mandatory** if error exists
+
+          type: string
+        message:
+          description: |
+            Error message
+            
+            ## Rules
+            OptionalError code
+            
+            ## Rules
+            **Mandatory** if error exists
+          type: string
+      example:
+        type: error | warning
+        code: '801'
+        message: Error filtering by product
+    Response:
+      title: Root Type for Response
+      description: Generic Response
+      required:
+        - responseStatus
+      type: object
+      properties:
+        errors:
+          nullable: true
+          description: |
+            Errors | warnings in the operations
+            
+            ## Rules
+            Optional
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        responseStatus:
+          description: |
+            Determine the status of the operations
+            * success
+            * error
+            
+            ## Rules
+            **Mandatory**
+          enum:
+            - success
+            - error
+          type: string

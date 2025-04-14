@@ -1,53 +1,53 @@
 package com.newsnow.media.app.usecases;
 
-import com.newsnow.media.app.domain.Media;
-import com.newsnow.media.app.domain.Task;
-import com.newsnow.media.app.ports.driven.formanagedata.ForManageData;
-import com.newsnow.media.app.ports.driven.formanagemedia.ForManageMedia;
-import com.newsnow.media.app.ports.driving.formanagetask.CreateTaskRequest;
+import com.newsnow.media.domain.facade.MediaServiceContext;
+import com.newsnow.media.domain.model.Media;
+import com.newsnow.media.domain.model.Task;
+import com.newsnow.media.domain.model.TaskStatus;
+import com.newsnow.media.domain.ports.driven.ImageProcessingPort.ImageData;
+import com.newsnow.media.domain.ports.driven.TaskRepositoryPort;
+import com.newsnow.media.domain.ports.driving.formanagetask.CreateTaskRequest;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import java.util.function.BiFunction;
+import org.springframework.util.DigestUtils;
 import reactor.core.publisher.Mono;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.util.function.Function;
 
-public class CreateTask implements Function<CreateTaskRequest, Mono<Task>> {
+public class CreateTask implements BiFunction<CreateTaskRequest, MediaServiceContext, Mono<Task>> {
 
-    private final ForManageData forManageData;
-    private final ForManageMedia forManageMedia;
+    private final TaskRepositoryPort taskRepository;
+    private final TaskProcessor taskProcessor;
 
-    public CreateTask(ForManageData forManageData, ForManageMedia forManageMedia) {
-        this.forManageData = forManageData;
-        this.forManageMedia = forManageMedia;
+    public CreateTask(TaskRepositoryPort taskRepository, TaskProcessor taskProcessor) {
+        this.taskRepository = taskRepository;
+        this.taskProcessor = taskProcessor;
     }
 
     @Override
-    public Mono<Task> apply(CreateTaskRequest createTaskRequest) {
-       return Mono.just(createTaskRequest)
-               .<Media>handle((taskRequest, sink) -> {
-                   try {
-                       sink.next(createMedia(taskRequest.getImage()));
-                   } catch (Exception e) {
-                       sink.error(new RuntimeException(e));
-                   }
-               })
-               .flatMap(forManageMedia::uploadImage)
-               .map(media ->  Task.builder()
-                       .status("PENDING")
-                       .oldMedia(media)
-                       .newMedia(Media.builder()
-                               .height(createTaskRequest.getHeight())
-                               .width(createTaskRequest.getWidth())
-                               .build())
-                       .build())
-               .flatMap(forManageData::createTask);
+    public Mono<Task> apply(CreateTaskRequest request, MediaServiceContext mediaServiceContext) {
+        return taskRepository.save(
+            Task.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(LocalDateTime.now())
+                .status(TaskStatus.PENDING)
+                .oldMedia(createMedia(request.image()))
+                .newMedia(Media.builder()
+                    .width(request.width())
+                    .height(request.height())
+                    .build())
+                .build()
+        ).flatMap(task -> {
+            taskProcessor.enqueueTask(task, mediaServiceContext, new ImageData(request.image(), task.getOldMedia().getMd5(), "application/json"));
+            return Mono.just(task);
+        });
     }
 
-    private Media createMedia(byte[] image) throws Exception {
+    private Media createMedia(byte[] image) {
         InputStream in = new ByteArrayInputStream(image);
         BufferedImage buf = null;
         try {
@@ -55,21 +55,7 @@ public class CreateTask implements Function<CreateTaskRequest, Mono<Task>> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return Media.builder().width(buf.getWidth()).height(buf.getHeight()).md5(computeMD5(image)).build();
+        return Media.builder().width(buf.getWidth()).height(buf.getHeight()).md5(DigestUtils.md5DigestAsHex(image)).build();
     }
 
-
-    private String computeMD5(byte[] image) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        try (InputStream is = new ByteArrayInputStream(image)) {
-            byte[] buffer = new byte[8192];
-            int read;
-            while ((read = is.read(buffer)) != -1) {
-                md.update(buffer, 0, read);
-            }
-        }
-        StringBuilder sb = new StringBuilder();
-        for (byte b : md.digest()) sb.append(String.format("%02x", b));
-        return sb.toString();
-    }
 }

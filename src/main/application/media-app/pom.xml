@@ -12,26 +12,23 @@
     </parent>
 
     <artifactId>media-app</artifactId>
-
     <packaging>jar</packaging>
-
-    <name>Media Application (Hexagon)</name>
+    <name>Media Application</name>
 
     <dependencies>
-        <dependency>
-            <groupId>com.newsnow</groupId>
-            <artifactId>media-lib</artifactId>
-            <version>1.0.0</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <version>3.7.4</version>
+            <groupId>com.newsnow</groupId>
+            <artifactId>media-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
         </dependency>
     </dependencies>
 

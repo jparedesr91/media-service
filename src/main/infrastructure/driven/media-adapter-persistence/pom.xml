@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.newsnow</groupId>
+    <artifactId>media-service</artifactId>
+    <version>1.0.0</version>
+    <relativePath>../../../../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>media-adapter-persistence</artifactId>
+  <packaging>jar</packaging>
+  <name>MediaAdapterPersitence- ForManageData Driven Adapter</name>
+
+  <properties>
+    <flapdoodle.emdeb.version>4.20.0</flapdoodle.emdeb.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.newsnow</groupId>
+      <artifactId>media-app</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>de.flapdoodle.embed</groupId>
+      <artifactId>de.flapdoodle.embed.mongo</artifactId>
+      <version>${flapdoodle.emdeb.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>
