@@ -2,15 +2,15 @@ package com.newsnow.media.app.usecases;
 
 import com.newsnow.media.domain.facade.MediaServiceContext;
 import com.newsnow.media.domain.model.Task;
-import com.newsnow.media.domain.ports.driven.ImageProcessingPort;
-import com.newsnow.media.domain.ports.driven.ImageProcessingPort.ImageData;
-import com.newsnow.media.domain.ports.driven.ImageStoragePort;
-import com.newsnow.media.domain.ports.driven.TaskRepositoryPort;
+import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort;
+import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort.ImageData;
+import com.newsnow.media.domain.ports.driven.image.ImageStoragePort;
+import com.newsnow.media.domain.ports.driven.task.TaskRepositoryPort;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Schedulers;
 
-public class TaskProcessor {
+public class TaskProcessorUseCase {
 
     private final ImageProcessingPort imageProcessor;
     private final ImageStoragePort imageStorage;
@@ -18,7 +18,7 @@ public class TaskProcessor {
 
     private final Sinks.Many<ProcessingJob> processingSink = Sinks.many().unicast().onBackpressureBuffer();
 
-    public TaskProcessor(ImageProcessingPort imageProcessor, ImageStoragePort imageStorage, TaskRepositoryPort taskRepository) {
+    public TaskProcessorUseCase(ImageProcessingPort imageProcessor, ImageStoragePort imageStorage, TaskRepositoryPort taskRepository) {
         this.imageProcessor = imageProcessor;
         this.imageStorage = imageStorage;
         this.taskRepository = taskRepository;

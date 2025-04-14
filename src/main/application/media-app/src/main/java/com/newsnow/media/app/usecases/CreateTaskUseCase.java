@@ -4,13 +4,13 @@ import com.newsnow.media.domain.facade.MediaServiceContext;
 import com.newsnow.media.domain.model.Media;
 import com.newsnow.media.domain.model.Task;
 import com.newsnow.media.domain.model.TaskStatus;
-import com.newsnow.media.domain.ports.driven.ImageProcessingPort.ImageData;
-import com.newsnow.media.domain.ports.driven.TaskRepositoryPort;
-import com.newsnow.media.domain.ports.driving.formanagetask.CreateTaskRequest;
+import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort;
+import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort.ImageData;
+import com.newsnow.media.domain.ports.driven.task.TaskRepositoryPort;
+import com.newsnow.media.domain.ports.driving.task.CreateTaskRequest;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import org.springframework.util.DigestUtils;
 import reactor.core.publisher.Mono;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -18,14 +18,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CreateTask implements BiFunction<CreateTaskRequest, MediaServiceContext, Mono<Task>> {
+public class CreateTaskUseCase implements BiFunction<CreateTaskRequest, MediaServiceContext, Mono<Task>> {
 
     private final TaskRepositoryPort taskRepository;
-    private final TaskProcessor taskProcessor;
+    private final TaskProcessorUseCase taskProcessor;
+    private final ImageProcessingPort imageProcessing;
 
-    public CreateTask(TaskRepositoryPort taskRepository, TaskProcessor taskProcessor) {
+    public CreateTaskUseCase(TaskRepositoryPort taskRepository, TaskProcessorUseCase taskProcessor, ImageProcessingPort imageProcessing) {
         this.taskRepository = taskRepository;
         this.taskProcessor = taskProcessor;
+        this.imageProcessing = imageProcessing;
     }
 
     @Override
@@ -55,7 +57,12 @@ public class CreateTask implements BiFunction<CreateTaskRequest, MediaServiceCon
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return Media.builder().width(buf.getWidth()).height(buf.getHeight()).md5(DigestUtils.md5DigestAsHex(image)).build();
+        return Media.builder()
+                .id(UUID.randomUUID().toString())
+                .width(buf.getWidth())
+                .height(buf.getHeight())
+                .md5(imageProcessing.commuteMD5(image))
+                .build();
     }
 
 }

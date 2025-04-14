@@ -1,4 +1,4 @@
-package com.newsnow.media.domain.ports.driven;
+package com.newsnow.media.domain.ports.driven.task;
 
 import com.newsnow.media.domain.model.Task;
 import reactor.core.publisher.Mono;

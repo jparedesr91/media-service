@@ -17,13 +17,11 @@ public class Error implements Serializable {
     @Serial
     private static final long serialVersionUID = 5973471280896101028L;
     private ErrorCode code;
-    private String detail;
-    private LocalDateTime timestamp;
+    private String message;
 
-    public Error(ErrorCode code, String detail) {
+    public Error(ErrorCode code, String message) {
         this.code = code;
-        this.detail = detail;
-        this.timestamp = LocalDateTime.now();
+        this.message = message;
     }
 
     /**
@@ -34,8 +32,8 @@ public class Error implements Serializable {
      *
      * @return An error object populated with the specified code and detail.
      */
-    static public Error err(ErrorCode code, String detail) {
-        return new Error(code, detail);
+    static public Error err(ErrorCode code, String message) {
+        return new Error(code, message);
     }
 
 }

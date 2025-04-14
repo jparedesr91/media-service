@@ -1,16 +1,18 @@
 package com.newsnow.media.outside.driving.api.adapters;
 
 import com.newsnow.media.app.facade.TaskFacade;
-import com.newsnow.media.domain.ports.driving.formanagetask.CreateTaskRequest;
+import com.newsnow.media.domain.ports.driving.task.CreateTaskRequest;
 import com.newsnow.media.outside.driving.api.GenericResponseDTO;
 import java.util.UUID;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@RestController
 public class TaskController extends Controller<TaskFacade> implements TaskApi {
 
   @Override
