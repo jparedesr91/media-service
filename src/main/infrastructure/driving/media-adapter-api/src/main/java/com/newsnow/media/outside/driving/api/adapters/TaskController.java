@@ -1,7 +1,7 @@
 package com.newsnow.media.outside.driving.api.adapters;
 
 import com.newsnow.media.app.facade.TaskFacade;
-import com.newsnow.media.domain.ports.driving.task.CreateTaskRequest;
+import com.newsnow.media.app.ports.driving.task.CreateTaskRequest;
 import com.newsnow.media.outside.driving.api.GenericResponseDTO;
 import java.util.UUID;
 import org.springframework.core.io.buffer.DataBufferUtils;

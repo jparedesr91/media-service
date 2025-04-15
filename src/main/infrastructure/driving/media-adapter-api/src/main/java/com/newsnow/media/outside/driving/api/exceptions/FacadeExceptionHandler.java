@@ -1,21 +1,21 @@
 package com.newsnow.media.outside.driving.api.exceptions;
 
-import static com.newsnow.media.domain.exceptions.errors.Error.err;
-import static com.newsnow.media.domain.exceptions.errors.ErrorCode.INTERNAL_ERROR;
-import static com.newsnow.media.domain.exceptions.errors.ErrorCode.INVALID_INPUT;
-import static com.newsnow.media.domain.exceptions.errors.ErrorCode.INVALID_REFERENCE;
-import static com.newsnow.media.domain.exceptions.errors.ErrorCode.NOT_IMPLEMENTED_YET;
-import static com.newsnow.media.domain.facade.Result.failed;
+import static com.newsnow.media.app.exceptions.errors.Error.err;
+import static com.newsnow.media.app.exceptions.errors.ErrorCode.INTERNAL_ERROR;
+import static com.newsnow.media.app.exceptions.errors.ErrorCode.INVALID_INPUT;
+import static com.newsnow.media.app.exceptions.errors.ErrorCode.INVALID_REFERENCE;
+import static com.newsnow.media.app.exceptions.errors.ErrorCode.NOT_IMPLEMENTED_YET;
+import static com.newsnow.media.app.facade.config.Result.failed;
 import static com.newsnow.media.outside.driving.api.i18n.MessageContextHolder.msg;
 import static reactor.core.publisher.Mono.just;
 
-import com.newsnow.media.domain.exceptions.DataIntegrityException;
-import com.newsnow.media.domain.exceptions.DataSourceCommunicationException;
-import com.newsnow.media.domain.exceptions.DuplicatedEntityException;
-import com.newsnow.media.domain.exceptions.EntityNotFoundException;
-import com.newsnow.media.domain.exceptions.ValidationException;
-import com.newsnow.media.domain.exceptions.errors.ErrorCode;
-import com.newsnow.media.domain.facade.Result;
+import com.newsnow.media.app.exceptions.DataIntegrityException;
+import com.newsnow.media.app.exceptions.DataSourceCommunicationException;
+import com.newsnow.media.app.exceptions.DuplicatedEntityException;
+import com.newsnow.media.app.exceptions.EntityNotFoundException;
+import com.newsnow.media.app.exceptions.ValidationException;
+import com.newsnow.media.app.exceptions.errors.ErrorCode;
+import com.newsnow.media.app.facade.config.Result;
 import jakarta.annotation.PostConstruct;
 import java.util.Map;
 import java.util.function.Function;
@@ -55,7 +55,7 @@ public class FacadeExceptionHandler extends ExceptionManager<Mono<Result<?>>> {
 
     @SuppressWarnings("unchecked")
     @Around(
-            "execution(reactor.core.publisher.Mono com.newsnow.*.facade.*.impl.*FacadeImpl+.*(..))"
+            "execution(reactor.core.publisher.Mono com.newsnow.*.facade.*.impl.FacadeImpl*+.*(..))"
     )
     public Object intercept(ProceedingJoinPoint procedure) {
         try {

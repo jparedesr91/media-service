@@ -1,6 +1,6 @@
 package com.newsnow.media.outside.driven.adapter.image.processor;
 
-import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort;
+import com.newsnow.media.app.ports.driven.image.ImageProcessingPort;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import net.coobird.thumbnailator.Thumbnails;

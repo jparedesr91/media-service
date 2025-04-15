@@ -1,7 +1,7 @@
 package com.newsnow.media.outside.driven.adapter.image.storage.adapters;
 
-import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort.ImageData;
-import com.newsnow.media.domain.ports.driven.image.ImageStoragePort;
+import com.newsnow.media.app.ports.driven.image.ImageProcessingPort.ImageData;
+import com.newsnow.media.app.ports.driven.image.ImageStoragePort;
 import java.net.URL;
 import java.util.UUID;
 import com.newsnow.media.outside.driven.adapter.image.storage.configuration.AwsProperties;

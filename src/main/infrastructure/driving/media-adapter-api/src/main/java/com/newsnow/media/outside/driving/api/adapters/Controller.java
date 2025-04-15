@@ -1,12 +1,14 @@
 package com.newsnow.media.outside.driving.api.adapters;
 
-import static com.newsnow.media.domain.exceptions.errors.ErrorCode.Series.VALIDATION;
+import static com.newsnow.media.app.exceptions.errors.ErrorCode.Series.VALIDATION;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-import com.newsnow.media.domain.exceptions.errors.ErrorCode;
-import com.newsnow.media.domain.facade.MediaServiceContext;
-import com.newsnow.media.domain.facade.Result;
+import com.newsnow.media.app.exceptions.errors.ErrorCode;
+import com.newsnow.media.app.facade.config.MediaServiceContext;
+import com.newsnow.media.app.facade.config.Result;
 import com.newsnow.media.outside.driving.api.GenericResponseDTO;
+import com.newsnow.media.outside.driving.api.GenericResponseDTO.ResponseStatusEnum;
+import com.newsnow.media.outside.driving.api.mappers.WebMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import static org.springframework.http.ResponseEntity.*;
-import static com.newsnow.media.outside.driving.api.mappers.WebMapper.MAPPER;
 
 /**
  * Wrapper controller for Webflux approach.
@@ -31,7 +32,7 @@ public abstract class Controller<F> {
     private static final ResponseEntity<GenericResponseDTO> NOT_CONTENT = noContent().build();
     private static final ResponseEntity<GenericResponseDTO> NOT_FOUND = notFound().build();
     private @Autowired F facade;
-
+    private @Autowired WebMapper MAPPER;
 
     private Mono<MediaServiceContext> generateContext(ServerWebExchange exchange) {
         return Mono.just(MediaServiceContext.newInstance())
@@ -72,7 +73,7 @@ public abstract class Controller<F> {
         return generateContext(exchange)
             .flatMap(context -> function.apply(this.facade, context)
                 .map(result -> result.isSuccess()
-                    ? ok(MAPPER.toGenericResponseDTO("success", result))
+                    ? ok(MAPPER.toGenericResponseDTO(ResponseStatusEnum.SUCCESS, result))
                     : this.getResponse(result)));
     }
 
@@ -84,14 +85,14 @@ public abstract class Controller<F> {
                   if (code == VALIDATION) {
                     return result.getErrors().stream()
                         .anyMatch(error -> error.getCode() == ErrorCode.INVALID_REFERENCE)
-                        ? status(NOT_FOUND.getStatusCode()).body(MAPPER.toGenericResponseDTO("error", result))
-                        : badRequest().body(MAPPER.toGenericResponseDTO("error", result));
+                        ? status(NOT_FOUND.getStatusCode()).body(MAPPER.toGenericResponseDTO(ResponseStatusEnum.ERROR, result))
+                        : badRequest().body(MAPPER.toGenericResponseDTO(ResponseStatusEnum.ERROR, result));
                   }
                   return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                      .body(MAPPER.toGenericResponseDTO("error", result));
+                      .body(MAPPER.toGenericResponseDTO(ResponseStatusEnum.ERROR, result));
                 })
                 .orElse(ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                    .body(MAPPER.toGenericResponseDTO("error", result)));
+                    .body(MAPPER.toGenericResponseDTO(ResponseStatusEnum.ERROR, result)));
     }
 
     private ErrorCode.Series reduce(ErrorCode.Series series1, ErrorCode.Series series2) {

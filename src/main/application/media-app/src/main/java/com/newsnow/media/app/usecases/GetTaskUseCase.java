@@ -1,8 +1,9 @@
 package com.newsnow.media.app.usecases;
 
-import com.newsnow.media.domain.facade.MediaServiceContext;
-import com.newsnow.media.domain.model.Task;
-import com.newsnow.media.domain.ports.driven.task.TaskRepositoryPort;
+import com.newsnow.media.app.facade.config.MediaServiceContext;
+import com.newsnow.media.app.domain.Task;
+import com.newsnow.media.app.ports.driven.task.TaskRepositoryPort;
+import com.newsnow.media.domain.exceptions.EntityNotFoundException;
 import java.util.function.BiFunction;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +17,7 @@ public class GetTaskUseCase implements BiFunction<String, MediaServiceContext, M
 
     @Override
     public Mono<Task> apply(String taskId, MediaServiceContext mediaServiceContext) {
-        return taskRepository.getById(taskId);
+        return taskRepository.getById(taskId)
+            .switchIfEmpty(Mono.error(new EntityNotFoundException("seed.service.entity_not_found")));
     }
 }

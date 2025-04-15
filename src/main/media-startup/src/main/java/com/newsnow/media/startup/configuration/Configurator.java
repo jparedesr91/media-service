@@ -5,9 +5,9 @@ import com.newsnow.media.app.facade.TaskFacade;
 import com.newsnow.media.app.usecases.CreateTaskUseCase;
 import com.newsnow.media.app.usecases.GetTaskUseCase;
 import com.newsnow.media.app.usecases.TaskProcessorUseCase;
-import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort;
-import com.newsnow.media.domain.ports.driven.image.ImageStoragePort;
-import com.newsnow.media.domain.ports.driven.task.TaskRepositoryPort;
+import com.newsnow.media.app.ports.driven.image.ImageProcessingPort;
+import com.newsnow.media.app.ports.driven.image.ImageStoragePort;
+import com.newsnow.media.app.ports.driven.task.TaskRepositoryPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

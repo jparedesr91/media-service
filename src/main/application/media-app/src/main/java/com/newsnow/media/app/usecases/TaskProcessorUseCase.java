@@ -1,11 +1,11 @@
 package com.newsnow.media.app.usecases;
 
-import com.newsnow.media.domain.facade.MediaServiceContext;
-import com.newsnow.media.domain.model.Task;
-import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort;
-import com.newsnow.media.domain.ports.driven.image.ImageProcessingPort.ImageData;
-import com.newsnow.media.domain.ports.driven.image.ImageStoragePort;
-import com.newsnow.media.domain.ports.driven.task.TaskRepositoryPort;
+import com.newsnow.media.app.facade.config.MediaServiceContext;
+import com.newsnow.media.app.domain.Task;
+import com.newsnow.media.app.ports.driven.image.ImageProcessingPort;
+import com.newsnow.media.app.ports.driven.image.ImageProcessingPort.ImageData;
+import com.newsnow.media.app.ports.driven.image.ImageStoragePort;
+import com.newsnow.media.app.ports.driven.task.TaskRepositoryPort;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Schedulers;
