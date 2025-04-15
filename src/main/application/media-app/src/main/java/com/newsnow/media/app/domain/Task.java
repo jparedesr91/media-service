@@ -1,6 +1,8 @@
 package com.newsnow.media.app.domain;
 
 import java.time.LocalDateTime;
+
+import com.newsnow.media.app.exceptions.DataIntegrityException;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,7 +17,7 @@ public class Task {
 
     public void startProcessing() {
         if (this.status != TaskStatus.PENDING) {
-            throw new IllegalStateException("Task already in progress");
+            throw new DataIntegrityException("seed.service.data_integrity_violated");
         }
         this.status = TaskStatus.PROCESSING;
     }

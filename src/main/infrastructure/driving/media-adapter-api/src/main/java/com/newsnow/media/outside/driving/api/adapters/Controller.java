@@ -22,11 +22,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import static org.springframework.http.ResponseEntity.*;
 
-/**
- * Wrapper controller for Webflux approach.
- *
- * @param <F> The facade interface to be used by the controller to perform the business operations.
- */
 public abstract class Controller<F> {
 
     private static final ResponseEntity<GenericResponseDTO> NOT_CONTENT = noContent().build();

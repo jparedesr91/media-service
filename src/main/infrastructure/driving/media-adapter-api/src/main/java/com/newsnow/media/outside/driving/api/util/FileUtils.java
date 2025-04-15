@@ -1,18 +1,15 @@
 package com.newsnow.media.outside.driving.api.util;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.joining;
-
-import java.io.IOException;
-import java.util.stream.Stream;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-/**
- * Ftility class for file operations.
- *
- */
+import java.io.IOException;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+
 public final class FileUtils {
 
     static public Stream<String> findFilePathsAsStream(String pattern, String filename, String extension, int levelsToSkip, String delimiter) {
@@ -27,8 +24,6 @@ public final class FileUtils {
             throw new RuntimeException("Error when trying to find file resources!", ex);
         }
     }
-
-    //<editor-fold desc="Support methods">
     private static String map(Resource resource, String filename, String extension, int levelsToSkip, String delimiter) {
         try {
             String[] path = resource.getURL().getPath().split("/");
@@ -40,7 +35,6 @@ public final class FileUtils {
             throw new RuntimeException(ex);
         }
     }
-    //</editor-fold>
 
     private FileUtils() {
         throw new AssertionError("No 'FileUtils' instances for you!");

@@ -26,10 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-/**
- * {@link ExceptionManager}'s implementation for the <code>Orchestration</code> layer.
- *
- */
 @Aspect
 @Component
 public class FacadeExceptionHandler extends ExceptionManager<Mono<Result<?>>> {

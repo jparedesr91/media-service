@@ -32,10 +32,6 @@ import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 import reactor.core.publisher.Mono;
 
-/**
- * Default {@link ExceptionManager exception handling} implementation for the <b>REST</b> distribution layer.
- *
- */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ExceptionManager<ResponseEntity<GenericResponseDTO>> implements ErrorWebExceptionHandler {
 
