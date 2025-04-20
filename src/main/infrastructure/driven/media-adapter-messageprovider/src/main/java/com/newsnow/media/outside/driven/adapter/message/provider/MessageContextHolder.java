@@ -1,15 +1,17 @@
-package com.newsnow.media.outside.driving.api.i18n;
+package com.newsnow.media.outside.driven.adapter.message.provider;
 
-
-import static com.newsnow.media.outside.driving.api.i18n.LocaleContextHolder.getLocale;
+import static com.newsnow.media.outside.driven.adapter.message.provider.LocaleContextHolder.getLocale;
 import static java.util.stream.Stream.concat;
 
-import com.newsnow.media.outside.driving.api.util.FileUtils;
+import com.newsnow.media.app.ports.driven.message.MessageProvider;
+import com.newsnow.media.outside.driven.adapter.message.provider.util.FileUtils;
 import java.util.stream.Stream;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.stereotype.Component;
 
-public class MessageContextHolder {
+@Component
+public class MessageContextHolder implements MessageProvider {
     private static final MessageSource SOURCE;
 
     static {
@@ -18,11 +20,11 @@ public class MessageContextHolder {
         ((ResourceBundleMessageSource)SOURCE).setDefaultEncoding("UTF-8");
     }
 
-    static public String msg(String code) {
+    public String msg(String code) {
         return SOURCE.getMessage(code, null, getLocale());
     }
 
-    static public String msg(String code, Object... args) {
+    public String msg(String code, Object... args) {
         return SOURCE.getMessage(code, 0 != args.length ? args : null, getLocale());
     }
 
@@ -46,7 +48,4 @@ public class MessageContextHolder {
         return concat(defaultMessages, validationMessages).toArray(String[]::new);
     }
 
-    private MessageContextHolder() {
-        throw new AssertionError("No 'MessageContextHolder' instances for you!");
-    }
 }

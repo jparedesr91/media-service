@@ -2,6 +2,7 @@ package com.newsnow.media.startup.configuration;
 
 import com.newsnow.media.app.TaskFacadeImpl;
 import com.newsnow.media.app.facade.TaskFacade;
+import com.newsnow.media.app.ports.driven.message.MessageProvider;
 import com.newsnow.media.app.usecases.CreateTaskUseCase;
 import com.newsnow.media.app.usecases.GetTaskUseCase;
 import com.newsnow.media.app.usecases.TaskProcessorUseCase;
@@ -20,8 +21,8 @@ public class Configurator {
     }
 
     @Bean
-    GetTaskUseCase getTaskUseCase(TaskRepositoryPort taskRepository) {
-        return new GetTaskUseCase(taskRepository);
+    GetTaskUseCase getTaskUseCase(TaskRepositoryPort taskRepository, MessageProvider messageProvider) {
+        return new GetTaskUseCase(taskRepository, messageProvider);
     }
 
     @Bean

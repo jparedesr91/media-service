@@ -31,8 +31,7 @@ public class TaskController extends Controller<TaskFacade> implements TaskApi {
   }
 
   @Override
-  public Mono<ResponseEntity<GenericResponseDTO>> getTask(UUID taskId,
-      ServerWebExchange exchange) {
+  public Mono<ResponseEntity<GenericResponseDTO>> getTask(UUID taskId, ServerWebExchange exchange) {
     return this.perform((facade, context) -> facade.getTask(taskId.toString(), context), exchange);
   }
 

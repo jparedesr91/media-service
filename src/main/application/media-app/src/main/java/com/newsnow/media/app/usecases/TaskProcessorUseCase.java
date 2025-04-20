@@ -47,7 +47,7 @@ public class TaskProcessorUseCase {
                 }))
             .onErrorResume(e -> taskRepository.getById(job.task().getId())
                 .flatMap(task -> {
-                    task.markFailed();
+                    task.markFailed(e.getMessage());
                     return taskRepository.save(task);
                 }));
     }

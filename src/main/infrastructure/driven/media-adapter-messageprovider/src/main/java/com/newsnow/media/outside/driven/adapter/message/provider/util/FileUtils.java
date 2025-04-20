@@ -1,4 +1,4 @@
-package com.newsnow.media.outside.driving.api.util;
+package com.newsnow.media.outside.driven.adapter.message.provider.util;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;

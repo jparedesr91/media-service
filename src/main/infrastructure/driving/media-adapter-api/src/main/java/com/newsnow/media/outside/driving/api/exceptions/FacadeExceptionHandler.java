@@ -6,7 +6,6 @@ import static com.newsnow.media.app.exceptions.errors.ErrorCode.INVALID_INPUT;
 import static com.newsnow.media.app.exceptions.errors.ErrorCode.INVALID_REFERENCE;
 import static com.newsnow.media.app.exceptions.errors.ErrorCode.NOT_IMPLEMENTED_YET;
 import static com.newsnow.media.app.facade.config.Result.failed;
-import static com.newsnow.media.outside.driving.api.i18n.MessageContextHolder.msg;
 import static reactor.core.publisher.Mono.just;
 
 import com.newsnow.media.app.exceptions.DataIntegrityException;
@@ -16,6 +15,7 @@ import com.newsnow.media.app.exceptions.EntityNotFoundException;
 import com.newsnow.media.app.exceptions.ValidationException;
 import com.newsnow.media.app.exceptions.errors.ErrorCode;
 import com.newsnow.media.app.facade.config.Result;
+import com.newsnow.media.app.ports.driven.message.MessageProvider;
 import jakarta.annotation.PostConstruct;
 import java.util.Map;
 import java.util.function.Function;
@@ -28,14 +28,19 @@ import reactor.core.publisher.Mono;
 
 @Aspect
 @Component
-public class FacadeExceptionHandler extends ExceptionManager<Mono<Result<?>>> {
+public class FacadeExceptionHandler extends ExceptionManager<Mono<Result>> {
 
-    @Autowired(required=false)
-    private ResponseRegister<Mono<Result<?>>> register;
+    private @Autowired(required = false) ResponseRegister<Mono<Result>> register;
+    private final MessageProvider messageProvider;
 
-    @Override
-    public void initialize(Map<Class<? extends Throwable>, Function<Throwable, Mono<Result<?>>>> responses) {
-        responses.put(UnsupportedOperationException.class, tw -> just(failed(err(NOT_IMPLEMENTED_YET, msg("seed.error.unsupported_operation")))));
+  public FacadeExceptionHandler(MessageProvider messageProvider) {
+    this.messageProvider = messageProvider;
+  }
+
+
+  @Override
+    public void initialize(Map<Class<? extends Throwable>, Function<Throwable, Mono<Result>>> responses) {
+        responses.put(UnsupportedOperationException.class, tw -> just(failed(err(NOT_IMPLEMENTED_YET, messageProvider.msg("seed.error.unsupported_operation")))));
         responses.put(IllegalArgumentException.class, tw -> this.getResponse((IllegalArgumentException) tw));
         responses.put(DataIntegrityException.class, tw -> this.getResponse((DataIntegrityException) tw));
         responses.put(DataSourceCommunicationException.class, tw -> this.getResponse((DataSourceCommunicationException) tw, INTERNAL_ERROR));
@@ -45,20 +50,22 @@ public class FacadeExceptionHandler extends ExceptionManager<Mono<Result<?>>> {
     }
 
     @Override
-    public Mono<Result<?>> getDefaultResponse() {
-        return just(failed(err(INTERNAL_ERROR, msg("seed.error.internal_error"))));
+    public Mono<Result> getDefaultResponse() {
+        return just(failed(err(INTERNAL_ERROR, messageProvider.msg("seed.error.internal_error"))));
     }
 
     @SuppressWarnings("unchecked")
     @Around(
-            "execution(reactor.core.publisher.Mono com.newsnow.*.facade.*.impl.FacadeImpl*+.*(..))"
+            "execution(reactor.core.publisher.Mono com.newsnow.media.app.*FacadeImpl*+.*(..))"
     )
     public Object intercept(ProceedingJoinPoint procedure) {
         try {
-            return ((Mono<Result<?>>) procedure.proceed()).onErrorResume(this::manage);
+            return ((Mono<Result>) procedure.proceed()).onErrorResume(this::manage);
         } catch (Throwable tw) {
+          if (logger.isDebugEnabled()) {
             logger.debug("Unbounded exception handled at facade level", tw);
-            return this.manage(tw);
+          }
+          return this.manage(tw);
         }
     }
 
@@ -69,15 +76,15 @@ public class FacadeExceptionHandler extends ExceptionManager<Mono<Result<?>>> {
         }
     }
 
-    private Mono<Result<?>> getResponse(RuntimeException ex) {
+    private Mono<Result> getResponse(RuntimeException ex) {
         return this.getResponse(ex, INVALID_INPUT);
     }
 
-    private Mono<Result<?>> getResponse(RuntimeException ex, ErrorCode code) {
+    private Mono<Result> getResponse(RuntimeException ex, ErrorCode code) {
         return just(failed(err(code, ex.getMessage())));
     }
 
-    private Mono<Result<?>> getResponse(ValidationException ex) {
+    private Mono<Result> getResponse(ValidationException ex) {
         return just(failed(err(ex.getCode(), ex.getMessage())));
     }
 }

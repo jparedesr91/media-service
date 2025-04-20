@@ -186,9 +186,10 @@ components:
       description: Returns a task
       properties:
         id:
-          type: integer
+          type: string
           description: Id of the task.
-          format: int64
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
         createdAt:
           type: string
           description: Creation date of the task.
@@ -206,6 +207,9 @@ components:
           type: string
           description: Task status
           enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+        statusDetail:
+          type: string
+          description: Task status detail
     Error:
       title: Root Type of Error
       description: ''

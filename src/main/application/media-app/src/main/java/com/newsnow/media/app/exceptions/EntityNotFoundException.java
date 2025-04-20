@@ -1,5 +1,7 @@
 package com.newsnow.media.app.exceptions;
 
+import lombok.Builder;
+
 /**
  * Thrown to indicate that a -possible- required entity wasn't found.
  *

@@ -21,11 +21,6 @@
         </dependency>
         <dependency>
             <groupId>com.newsnow</groupId>
-            <artifactId>media-domain</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.newsnow</groupId>
             <artifactId>media-app</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -47,6 +42,11 @@
         <dependency>
             <groupId>com.newsnow</groupId>
             <artifactId>media-adapter-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.newsnow</groupId>
+            <artifactId>media-adapter-messageprovider</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

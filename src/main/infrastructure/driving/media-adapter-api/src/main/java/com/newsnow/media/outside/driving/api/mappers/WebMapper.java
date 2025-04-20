@@ -8,23 +8,29 @@ import com.newsnow.media.outside.driving.api.GenericResponseDTO.ResponseStatusEn
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper
-public interface WebMapper {
+@Mapper(componentModel = "spring")
+public abstract class WebMapper {
+
+  @Autowired
+  private MapperRegistry mapperRegistry;
 
   @Mapping(target = "responseStatus", source = "responseStatus")
   @Mapping(target = "errors", expression = "java(toErrorDTO(result.getErrors()))")
-  @Mapping(target = "data", source = "result.val")
-  GenericResponseDTO toGenericResponseDTO(ResponseStatusEnum responseStatus, Result<?> result);
+  @Mapping(target = "data", expression = "java(mapData(result))")
+  public abstract GenericResponseDTO toGenericResponseDTO(ResponseStatusEnum responseStatus, Result<?> result);
 
   @Mapping(target = "responseStatus", source = "responseStatus")
   @Mapping(target = "errors", expression = "java(toErrorDTO(errors))")
   @Mapping(target = "data", ignore = true)
-  GenericResponseDTO toGenericResponseDTO(ResponseStatusEnum responseStatus, List<Error> errors);
+  public abstract GenericResponseDTO toGenericResponseDTO(ResponseStatusEnum responseStatus, List<Error> errors);
 
-  ErrorDTO toErrorDTO(Error val);
-  List<ErrorDTO> toErrorDTO(List<Error> val);
+  protected Object mapData(Result<?> result) {
+    return mapperRegistry.map(result.getVal());
+  }
+
+  public abstract ErrorDTO toErrorDTO(Error val);
+  public abstract List<ErrorDTO> toErrorDTO(List<Error> val);
 
 }
-

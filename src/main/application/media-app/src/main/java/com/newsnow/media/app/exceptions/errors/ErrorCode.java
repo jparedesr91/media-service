@@ -3,6 +3,7 @@ package com.newsnow.media.app.exceptions.errors;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
+import com.newsnow.media.app.exceptions.MediaApplicationException;
 import lombok.Getter;
 
 /**
@@ -21,8 +22,8 @@ public enum ErrorCode {
     UNDEFINED_VALIDATION(106, "Undefined validation"),
 
     // 2xx Backend errors
-    INTERNAL_ERROR(300, "Internal Error"),
-    NOT_IMPLEMENTED_YET(301,"Not Implemented Yet");
+    INTERNAL_ERROR(200, "Internal Error"),
+    NOT_IMPLEMENTED_YET(201,"Not Implemented Yet");
 
     private final int value;
     private final String detail;

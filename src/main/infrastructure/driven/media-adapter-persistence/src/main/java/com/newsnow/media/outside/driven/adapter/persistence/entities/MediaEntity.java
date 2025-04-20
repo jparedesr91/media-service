@@ -11,10 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(value = "media")
 public class MediaEntity {
 
-  @Id
   private String id;
   private String md5;
   private int width;

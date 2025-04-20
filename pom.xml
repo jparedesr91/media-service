@@ -17,6 +17,7 @@
         <module>src/main/infrastructure/driven/media-adapter-persistence</module>
         <module>src/main/infrastructure/driven/media-adapter-imagestorage</module>
         <module>src/main/infrastructure/driven/media-adapter-imageprocessor</module>
+        <module>src/main/infrastructure/driven/media-adapter-messageprovider</module>
     </modules>
 
     <properties>
