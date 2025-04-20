@@ -1,4 +1,4 @@
-package com.newsnow.media.outside.driving.api.i18n;
+package com.newsnow.media.outside.driven.adapter.message.provider;
 
 import java.util.Locale;
 

@@ -2,6 +2,7 @@ package com.newsnow.media.app.exceptions.errors;
 
 import java.io.Serial;
 import java.io.Serializable;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
+@Builder
 public class Error implements Serializable {
 
     @Serial

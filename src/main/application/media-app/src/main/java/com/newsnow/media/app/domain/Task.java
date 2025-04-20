@@ -14,6 +14,8 @@ public class Task {
     private Media newMedia;
     private Media oldMedia;
     private TaskStatus status;
+    private String statusDetail;
+
 
     public void startProcessing() {
         if (this.status != TaskStatus.PENDING) {
@@ -27,7 +29,8 @@ public class Task {
         this.status = TaskStatus.COMPLETED;
     }
 
-    public void markFailed() {
+    public void markFailed(String statusDetail) {
         this.status = TaskStatus.FAILED;
+        this.statusDetail = statusDetail;
     }
 }

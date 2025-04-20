@@ -1,6 +1,5 @@
 package com.newsnow.media.app.facade.config;
 
-import static java.util.List.of;
 import static java.util.Objects.requireNonNull;
 import com.newsnow.media.app.exceptions.errors.Error;
 
@@ -8,6 +7,8 @@ import com.newsnow.media.app.exceptions.errors.Error;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import lombok.Getter;
+
 /**
  * Represents the result the <b>facade</b> layer classes emits from its business operations. Encapsulates a detailed
  * response ready to be served for any distribution mode.
@@ -15,6 +16,7 @@ import java.util.function.Function;
  * @param <R> The type of the val wrapped within the result.
  *
  */
+@Getter
 public class Result<R> {
     private List<Error> errors;
     private R val;
@@ -82,15 +84,4 @@ public class Result<R> {
         return this;
     }
 
-    public List<Error> getErrors() {
-        return errors;
-    }
-
-    public R getVal() {
-        return val;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
 }

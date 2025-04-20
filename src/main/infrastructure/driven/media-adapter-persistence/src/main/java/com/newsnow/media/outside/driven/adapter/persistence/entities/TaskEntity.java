@@ -21,10 +21,9 @@ public class TaskEntity {
   private String id;
   @CreatedDate
   private LocalDateTime createdAt;
-  @DocumentReference(lazy = true)
   private MediaEntity newMedia;
-  @DocumentReference(lazy = true)
   private MediaEntity oldMedia;
   private TaskStatusEntity status;
+  private String statusDetail;
 
 }
